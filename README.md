@@ -7,6 +7,10 @@ Tennis data exploration and forecasting
 * Test: `sbt test`
 * Package: `sbt package`
 
+
+* Run code coverage: `sbt coverage`
+* Code coverage report: `sbt coverageReport`
+
 ### Pre-requisites
 * Install [SBT](https://www.scala-sbt.org/download.html)
 * Install [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository)
