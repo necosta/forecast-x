@@ -14,16 +14,10 @@ object ForecastX {
 
     val dataflow = Dataflow.withConfig(sourceFolder)
 
-    println("Starting data import")
-    dataflow.runImport()
+    dataflow.startImport()
 
-    println("Starting data transformation")
-    dataflow.transformSourceFile()
-
-    println("TODO: Starting data analysis")
-    //dataflow.runAnalysis()
+    dataflow.startAnalysis()
 
     spark.stop()
-
   }
 }

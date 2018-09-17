@@ -1,10 +1,6 @@
 package pt.necosta.forecastx
 
-import java.io.File
-import java.net.URL
-import sys.process._
-
-import org.apache.spark.sql.Dataset
+import org.apache.spark.sql.functions._
 
 object Dataflow {
 
@@ -15,28 +11,41 @@ object Dataflow {
 
 class Dataflow(sourceFolder: String) extends WithSpark {
 
-  val sourceFilePath = s"$sourceFolder/sourceData.csv"
+  private val SAVE_FORMAT = "parquet"
+  val dataPrep: DataPrep = DataPrep.withConfig(sourceFolder)
+  val outputFile = s"$sourceFolder/output.parquet"
 
-  def runImport(): Unit = {
-    val urlHost = "raw.githubusercontent.com"
-    val urlPath = "JeffSackmann/tennis_atp/master"
+  def startImport(): Unit = {
+    println("Starting data raw import")
+    dataPrep.runImport()
 
-    new URL(s"https://$urlHost/$urlPath/atp_matches_2018.csv") #> new File(
-      sourceFilePath) !!
+    println("Starting data transformation")
+    val outputDs = dataPrep.transformSourceFile()
+
+    println("Persist dataset as parquet")
+    outputDs.write.format(SAVE_FORMAT).save(outputFile)
   }
 
-  def transformSourceFile(): Dataset[InputRecord] = {
+  def startAnalysis(): Unit = {
     import spark.implicits._
 
-    val df = spark.read
-      .option("inferSchema", "true")
-      .option("header", "true")
-      .csv(sourceFilePath)
+    val NUMBER_RECORDS = 3
 
-    // Remove underscore from all column names
-    df.columns
-      .foldLeft(df)((curr, n) =>
-        curr.withColumnRenamed(n, n.replaceAll("_", "")))
-      .as[InputRecord]
+    val inputDs = spark.read.parquet(outputFile).as[InputRecord]
+
+    println("Starting data analysis")
+    val outputDs = inputDs.transform(DataAnalysis.getTournamentCount)
+
+    val tournamentCountDs = outputDs
+      .orderBy(desc("tourneyCount"))
+      .take(NUMBER_RECORDS)
+
+    println(s"\nThe top $NUMBER_RECORDS tournaments with more games:\n")
+    tournamentCountDs.foreach(r =>
+      println(s"${r.tourneyId}: ${r.tourneyCount} games"))
   }
+
+  def startValidation(): Unit = ???
+
+  def startForecast(): Unit = ???
 }
