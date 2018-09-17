@@ -14,8 +14,11 @@ object ForecastX {
 
     val dataflow = Dataflow.withConfig(sourceFolder)
 
-    println("TODO: Starting data import")
-    //dataflow.runImport()
+    println("Starting data import")
+    dataflow.runImport()
+
+    println("Starting data transformation")
+    dataflow.transformSourceFile()
 
     println("TODO: Starting data analysis")
     //dataflow.runAnalysis()

@@ -1,21 +1,31 @@
 package pt.necosta.forecastx
 
+import java.io.File
+import java.net.URL
+import sys.process._
+
 import org.apache.spark.sql.Dataset
 
 object Dataflow {
 
   def withConfig(sourceFolder: String): Dataflow = {
-    new Dataflow(Some(sourceFolder))
-  }
-
-  def withoutConfig(): Dataflow = {
-    new Dataflow(None)
+    new Dataflow(sourceFolder)
   }
 }
 
-class Dataflow(sourceFolder: Option[String]) extends WithSpark {
+class Dataflow(sourceFolder: String) extends WithSpark {
 
-  def transformSourceFile(sourceFilePath: String): Dataset[InputRecord] = {
+  val sourceFilePath = s"$sourceFolder/sourceData.csv"
+
+  def runImport(): Unit = {
+    val urlHost = "raw.githubusercontent.com"
+    val urlPath = "JeffSackmann/tennis_atp/master"
+
+    new URL(s"https://$urlHost/$urlPath/atp_matches_2018.csv") #> new File(
+      sourceFilePath) !!
+  }
+
+  def transformSourceFile(): Dataset[InputRecord] = {
     import spark.implicits._
 
     val df = spark.read

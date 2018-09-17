@@ -1,5 +1,7 @@
 package pt.necosta.forecastx
 
+import java.io.File
+
 import org.apache.spark.sql.SparkSession
 
 class DataflowSpec extends TestConfig {
@@ -13,8 +15,8 @@ class DataflowSpec extends TestConfig {
       .getFile
 
     val outputDS = Dataflow
-      .withoutConfig()
-      .transformSourceFile(sourceFilePath)
+      .withConfig(new File(sourceFilePath).getParent)
+      .transformSourceFile()
 
     outputDS.count() should be(11)
 

@@ -10,6 +10,8 @@ ENV JAR_FILE=${PROJECT_NAME}_$SCALA_VERSION-$VERSION.jar
 
 COPY target/scala-$SCALA_VERSION/$JAR_FILE /opt
 
+RUN mkdir /forecastx
+
 # Change log level to WARN
 RUN sed -i -e 's/INFO/WARN/g' /opt/spark/dist/conf/log4j.properties
 
