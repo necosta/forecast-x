@@ -34,15 +34,22 @@ class Dataflow(sourceFolder: String) extends WithSpark {
     val inputDs = spark.read.parquet(outputFile).as[InputRecord]
 
     println("Starting data analysis")
-    val outputDs = inputDs.transform(DataAnalysis.getTournamentCount)
-
-    val tournamentCountDs = outputDs
+    val tournamentCountDs = inputDs
+      .transform(DataAnalysis.getTournamentGamesCount)
       .orderBy(desc("tourneyCount"))
       .take(NUMBER_RECORDS)
 
+    val surfaceDistributionDs = inputDs
+      .transform(DataAnalysis.getTournamentSurfaceDistribution)
+      .orderBy(desc("fraction"))
+      .collect()
+
     println(s"\nThe top $NUMBER_RECORDS tournaments with more games:\n")
     tournamentCountDs.foreach(r =>
-      println(s"${r.tourneyId}: ${r.tourneyCount} games"))
+      println(s"${r.tourneyId}-${r.tourneyName}: ${r.tourneyCount} games"))
+
+    println(s"\nTournaments surface distribution:\n")
+    surfaceDistributionDs.foreach(r => println(s"${r.surface}: ${r.fraction}"))
   }
 
   def startValidation(): Unit = ???

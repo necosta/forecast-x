@@ -23,7 +23,7 @@ class DataPrep(sourceFolder: String) extends WithSpark {
     val urlHost = "raw.githubusercontent.com"
     val urlPath = "JeffSackmann/tennis_atp/master"
 
-    new URL(s"https://$urlHost/$urlPath/atp_matches_2018.csv") #> new File(
+    new URL(s"https://$urlHost/$urlPath/atp_matches_2017.csv") #> new File(
       sourceFilePath) !!
   }
 

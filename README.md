@@ -5,7 +5,7 @@ Tennis data exploration and forecasting
 * Format: (automatic)
 * Build: `sbt compile`
 * Test: `sbt test`
-* Package: `sbt package`
+* Package: `sbt coverageOff package`
 
 
 * Run code coverage: `sbt coverage`

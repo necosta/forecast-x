@@ -30,3 +30,5 @@ fork in Test := true
 javaOptions in Test ++= Seq("-Xms512M",
                             "-Xmx2048M",
                             "-XX:+CMSClassUnloadingEnabled")
+
+coverageEnabled in Test := true

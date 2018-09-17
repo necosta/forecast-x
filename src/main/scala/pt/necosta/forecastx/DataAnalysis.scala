@@ -1,18 +1,30 @@
 package pt.necosta.forecastx
 
 import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.functions.count
-
-case class TournamentCount(tourneyId: String, tourneyCount: BigInt)
+import org.apache.spark.sql.functions._
 
 object DataAnalysis extends WithSpark {
 
-  def getTournamentCount: Dataset[InputRecord] => Dataset[TournamentCount] = {
+  def getTournamentGamesCount: Dataset[InputRecord] => Dataset[GamesCount] = {
     import spark.implicits._
 
     ds =>
-      ds.groupBy($"tourneyId")
+      ds.groupBy($"tourneyId", $"tourneyName")
         .agg(count($"tourneyId").alias("tourneyCount"))
-        .as[TournamentCount]
+        .as[GamesCount]
+  }
+
+  def getTournamentSurfaceDistribution
+    : Dataset[InputRecord] => Dataset[SurfaceDistribution] = {
+    import spark.implicits._
+
+    ds =>
+      {
+        val total = ds.count
+        ds.groupBy($"surface")
+          .agg(count($"surface").alias("surfaceCount"))
+          .withColumn("fraction", col("surfaceCount") * 100 / total)
+          .as[SurfaceDistribution]
+      }
   }
 }
