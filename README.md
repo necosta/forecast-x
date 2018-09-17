@@ -14,6 +14,13 @@ Tennis data exploration and forecasting
 ### Source data
 Available here: https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master/atp_matches_2018.csv
 
+Based on work at https://github.com/JeffSackmann/
+
+[Source code](https://github.com/JeffSackmann/tennis_atp)
+
+[License](https://github.com/JeffSackmann/tennis_atp#license)
+
+
 ### How to run Spark job
 * Build image:
 ```

@@ -16,8 +16,14 @@ class DataflowSpec extends TestConfig {
       .withoutConfig()
       .transformSourceFile(sourceFilePath)
 
-    outputDS.count() should be(3)
+    outputDS.count() should be(11)
 
-    outputDS.map(_.value).collect() should be(Array(1, 10, 100))
+    outputDS.map(_.tourneyId).collect().distinct should be(Array("2018-M020"))
+
+    outputDS.map(_.tourneyLevel).collect().distinct should be(Array("A"))
+
+    outputDS.map(_.winnerHand).collect().distinct should be(Array("R"))
+
+    outputDS.map(_.winnerAge).collect().max should be < 30.0
   }
 }
