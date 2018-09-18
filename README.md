@@ -26,6 +26,7 @@ Based on work at https://github.com/JeffSackmann/
 
 
 ### How to run Spark job
+
 * Build image:
 ```
 docker build --build-arg VERSION=x.y.z -t forecastx:latest .
@@ -34,5 +35,18 @@ docker build --build-arg VERSION=x.y.z -t forecastx:latest .
 
 * Run image:
 ```
-docker run forecastx:latest
+docker run -v /local/folder/forecastx:/forecastx forecastx:latest
 ```
+
+### How to run Jupyter notebook
+
+* Build image:
+```
+docker build -t forecastx_nb:latest -f notebooks/Dockerfile .
+```
+
+* Run image:
+```
+docker run -p 8888:8888 -e NB_USER=forecastx -v /local/folder/forecastx:/home/forecastx/work forecastx_nb:latest
+```
+

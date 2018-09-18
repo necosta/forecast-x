@@ -1,4 +1,4 @@
-FROM mesosphere/spark:latest
+FROM mesosphere/spark:latest as sparkImage
 
 ARG VERSION
 
