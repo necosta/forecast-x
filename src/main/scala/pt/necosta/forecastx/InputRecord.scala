@@ -2,7 +2,7 @@ package pt.necosta.forecastx
 
 case class InputRecord(tourneyId: String, // Tournament Id. Ex: 2018-M020
                        tourneyName: String, // Tournament Name. Ex: Brisbane
-                       surface: String, // Ex: Hard
+                       surface: Option[String], // Ex: Hard, Clay, Grass
                        drawSize: Int,
                        tourneyLevel: String, // Ex: A,B,C
                        tourneyDate: Int,
@@ -11,7 +11,7 @@ case class InputRecord(tourneyId: String, // Tournament Id. Ex: 2018-M020
                        winnerSeed: Option[Int],
                        winnerEntry: String,
                        winnerName: String,
-                       winnerHand: String, // Ex: R,L
+                       winnerHand: Option[String], // Ex: R,L, U
                        winnerHt: Option[Int], // Ex: 183
                        winnerIoc: String,
                        winnerAge: Double,
@@ -21,7 +21,7 @@ case class InputRecord(tourneyId: String, // Tournament Id. Ex: 2018-M020
                        loserSeed: Option[Int],
                        loserEntry: String,
                        loserName: String,
-                       loserHand: String,
+                       loserHand: Option[String], // Ex: R,L, U
                        loserHt: Option[Int],
                        loserIoc: String,
                        loserAge: Double,

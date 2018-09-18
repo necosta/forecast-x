@@ -14,7 +14,7 @@ object DataAnalysis extends WithSpark {
         .as[GamesCount]
   }
 
-  def getTournamentSurfaceDistribution
+  def getSurfaceDistribution
     : Dataset[InputRecord] => Dataset[SurfaceDistribution] = {
     import spark.implicits._
 
@@ -22,9 +22,22 @@ object DataAnalysis extends WithSpark {
       {
         val total = ds.count
         ds.groupBy($"surface")
-          .agg(count($"surface").alias("surfaceCount"))
+          .agg(count(lit(1)).alias("surfaceCount"))
           .withColumn("fraction", col("surfaceCount") * 100 / total)
           .as[SurfaceDistribution]
+      }
+  }
+
+  def getHandDistribution: Dataset[InputRecord] => Dataset[HandDistribution] = {
+    import spark.implicits._
+
+    ds =>
+      {
+        val total = ds.count
+        ds.groupBy($"winnerHand", $"loserHand")
+          .agg(count(lit(1)).alias("count"))
+          .withColumn("fraction", col("count") * 100 / total)
+          .as[HandDistribution]
       }
   }
 }

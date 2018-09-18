@@ -47,8 +47,14 @@ class Dataflow(sourceFolder: String) extends WithSpark {
       .orderBy(desc("tourneyCount"))
       .take(NUMBER_RECORDS)
 
+    // ToDo: Normalize null vs None
     val surfaceDistributionDs = inputDs
-      .transform(DataAnalysis.getTournamentSurfaceDistribution)
+      .transform(DataAnalysis.getSurfaceDistribution)
+      .orderBy(desc("fraction"))
+      .collect()
+
+    val handDistributionDs = inputDs
+      .transform(DataAnalysis.getHandDistribution)
       .orderBy(desc("fraction"))
       .collect()
 
@@ -58,6 +64,12 @@ class Dataflow(sourceFolder: String) extends WithSpark {
 
     println(s"\nTournaments surface distribution:\n")
     surfaceDistributionDs.foreach(r => println(s"${r.surface}: ${r.fraction}"))
+
+    println(s"\nTournaments hand winning distribution:\n")
+    handDistributionDs.foreach(
+      r =>
+        println(
+          s"Winner:${r.winnerHand} - Loser:${r.loserHand} => ${r.fraction}"))
   }
 
   def startValidation(): Unit = {

@@ -24,7 +24,7 @@ class DataPrepSpec extends TestConfig {
 
     sourceDS.map(_.tourneyLevel).collect().distinct should be(Array("A"))
 
-    sourceDS.map(_.winnerHand).collect().distinct should be(Array("R"))
+    sourceDS.map(_.winnerHand).collect().distinct should be(Array(Some("R")))
 
     sourceDS.map(_.winnerAge).collect().max should be < 30.0
   }

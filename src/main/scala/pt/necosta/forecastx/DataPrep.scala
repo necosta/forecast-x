@@ -17,14 +17,16 @@ object DataPrep {
 
 class DataPrep(sourceFolder: String) extends WithSpark {
 
-  val sourceFilePath = s"$sourceFolder/sourceData.csv"
-
   def runImport(): Unit = {
     val urlHost = "raw.githubusercontent.com"
     val urlPath = "JeffSackmann/tennis_atp/master"
 
-    new URL(s"https://$urlHost/$urlPath/atp_matches_2017.csv") #> new File(
-      sourceFilePath) !!
+    // Import last 10 years of data
+    (0 to 10).foreach(i => {
+      val year = 2018 - i
+      new URL(s"https://$urlHost/$urlPath/atp_matches_$year.csv") #> new File(
+        s"$sourceFolder/sourceData_$year.csv") !!
+    })
   }
 
   def transformSourceFile(): Dataset[InputRecord] = {
@@ -33,7 +35,7 @@ class DataPrep(sourceFolder: String) extends WithSpark {
     val df = spark.read
       .option("inferSchema", "true")
       .option("header", "true")
-      .csv(sourceFilePath)
+      .csv(s"$sourceFolder/sourceData*.csv")
 
     // Remove underscore from all column names
     df.columns
