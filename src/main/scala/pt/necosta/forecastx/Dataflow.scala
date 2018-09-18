@@ -72,18 +72,28 @@ class Dataflow(sourceFolder: String) extends WithSpark {
           s"Winner:${r.winnerHand} - Loser:${r.loserHand} => ${r.fraction}"))
   }
 
-  def startValidation(): Unit = {
+  def startStatsCollection(): Unit = {
     import spark.implicits._
 
     val inputDs = spark.read.parquet(outputFile).as[InputRecord]
 
     println("Starting data validation")
 
-    println(s"Number of rows: ${inputDs.count()}")
+    val rows = inputDs.count()
+    val columns = inputDs.columns.length
+    val years = inputDs.groupBy($"tourneyDate".substr(0, 4)).count().count()
+    val tournaments = inputDs.groupBy($"tourneyId").count().count()
 
-    println(s"Number of columns: ${inputDs.columns.length}")
+    println(s"Number of rows: $rows")
 
+    println(s"Number of columns: $columns")
+
+    println(s"Number of years: $years")
+
+    println(s"Number of tournaments: $tournaments")
   }
 
-  def startForecast(): Unit = ???
+  def startForecast(): Unit = {
+    println("TODO: Starting data forecasting")
+  }
 }

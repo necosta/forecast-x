@@ -29,7 +29,7 @@ Based on work at https://github.com/JeffSackmann/
 
 * Build image:
 ```
-docker build --build-arg VERSION=x.y.z -t forecastx:latest .
+docker build --build-arg VERSION=x.y.z --build-arg OPTION=Import -t forecastx:latest .
 ```
 **Note**: Get version from version.sbt file
 
