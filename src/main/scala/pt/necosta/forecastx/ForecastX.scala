@@ -16,6 +16,8 @@ object ForecastX {
 
     dataflow.startImport()
 
+    dataflow.startValidation()
+
     dataflow.startAnalysis()
 
     spark.stop()

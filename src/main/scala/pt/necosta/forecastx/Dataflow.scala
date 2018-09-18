@@ -1,5 +1,7 @@
 package pt.necosta.forecastx
 
+import java.io.File
+
 import org.apache.spark.sql.functions._
 
 object Dataflow {
@@ -16,6 +18,12 @@ class Dataflow(sourceFolder: String) extends WithSpark {
   val outputFile = s"$sourceFolder/output.parquet"
 
   def startImport(): Unit = {
+
+    if (new File(outputFile).exists()) {
+      println("Skipping data import. File exists.")
+      return
+    }
+
     println("Starting data raw import")
     dataPrep.runImport()
 
@@ -52,7 +60,18 @@ class Dataflow(sourceFolder: String) extends WithSpark {
     surfaceDistributionDs.foreach(r => println(s"${r.surface}: ${r.fraction}"))
   }
 
-  def startValidation(): Unit = ???
+  def startValidation(): Unit = {
+    import spark.implicits._
+
+    val inputDs = spark.read.parquet(outputFile).as[InputRecord]
+
+    println("Starting data validation")
+
+    println(s"Number of rows: ${inputDs.count()}")
+
+    println(s"Number of columns: ${inputDs.columns.length}")
+
+  }
 
   def startForecast(): Unit = ???
 }
