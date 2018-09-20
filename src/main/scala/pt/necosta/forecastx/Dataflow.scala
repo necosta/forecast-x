@@ -3,6 +3,7 @@ package pt.necosta.forecastx
 import java.io.File
 
 import org.apache.spark.sql.functions._
+import pt.necosta.forecastx.record.InputRecord
 
 object Dataflow {
 
@@ -94,6 +95,12 @@ class Dataflow(sourceFolder: String) extends WithSpark {
   }
 
   def startForecast(): Unit = {
-    println("TODO: Starting data forecasting")
+    import spark.implicits._
+
+    val inputDs = spark.read.parquet(outputFile).as[InputRecord]
+
+    println("ToDo: Starting data forecasting")
+
+    // DataForecast.prepData(inputDs)
   }
 }

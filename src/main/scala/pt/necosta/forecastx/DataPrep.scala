@@ -5,6 +5,7 @@ import java.net.URL
 
 import sys.process._
 import org.apache.spark.sql.Dataset
+import pt.necosta.forecastx.record.InputRecord
 
 import scala.language.postfixOps
 

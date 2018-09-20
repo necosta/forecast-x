@@ -18,14 +18,16 @@ class DataPrepSpec extends TestConfig {
       .withConfig(new File(sourceFilePath).getParent)
       .transformSourceFile()
 
-    sourceDS.count() should be(11)
+    sourceDS.count() should be(14)
 
-    sourceDS.map(_.tourneyId).collect().distinct should be(Array("2018-M020"))
+    sourceDS.map(_.tourneyId).collect().distinct should be(
+      Array("2018-M020", "2018-7161"))
 
     sourceDS.map(_.tourneyLevel).collect().distinct should be(Array("A"))
 
-    sourceDS.map(_.winnerHand).collect().distinct should be(Array(Some("R")))
+    sourceDS.map(_.winnerHand).collect().distinct should be(
+      Array(Some("R"), Some("L")))
 
-    sourceDS.map(_.winnerAge).collect().max should be < 30.0
+    sourceDS.map(_.winnerAge).collect().max should be < 31.0
   }
 }

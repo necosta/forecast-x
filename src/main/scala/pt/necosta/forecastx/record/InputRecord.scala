@@ -1,4 +1,4 @@
-package pt.necosta.forecastx
+package pt.necosta.forecastx.record
 
 case class InputRecord(tourneyId: String, // Tournament Id. Ex: 2018-M020
                        tourneyName: String, // Tournament Name. Ex: Brisbane

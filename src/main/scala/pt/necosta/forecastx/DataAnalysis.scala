@@ -2,6 +2,7 @@ package pt.necosta.forecastx
 
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.functions._
+import pt.necosta.forecastx.record._
 
 object DataAnalysis extends WithSpark {
 

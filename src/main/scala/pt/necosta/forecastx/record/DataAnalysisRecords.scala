@@ -1,4 +1,4 @@
-package pt.necosta.forecastx
+package pt.necosta.forecastx.record
 
 case class GamesCount(tourneyId: String,
                       tourneyName: String,
