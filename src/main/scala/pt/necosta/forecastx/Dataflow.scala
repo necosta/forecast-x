@@ -99,8 +99,8 @@ class Dataflow(sourceFolder: String) extends WithSpark {
 
     val inputDs = spark.read.parquet(outputFile).as[InputRecord]
 
-    println("ToDo: Starting data forecasting")
+    println("Starting data forecasting")
 
-    // DataForecast.prepData(inputDs)
+    RandomForest.start(DataForecast.prepData(inputDs))
   }
 }

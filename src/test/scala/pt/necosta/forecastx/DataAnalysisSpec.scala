@@ -11,7 +11,7 @@ class DataAnalysisSpec extends TestConfig {
   "DataAnalysis" should "correctly get number of games per tournament" in {
     val outputDS = getSourceDs.transform(DataAnalysis.getTournamentGamesCount)
 
-    outputDS.count() should be(2)
+    outputDS.count() should be(3)
 
     outputDS
       .filter(col("tourneyId") === "2018-M020")
@@ -27,18 +27,18 @@ class DataAnalysisSpec extends TestConfig {
     outputDS
       .filter(col("surface") === "Hard")
       .head()
-      .fraction should be(71.42857142857143)
+      .fraction should be(50.0)
   }
 
   "DataAnalysis" should "correctly get hand win/lost distribution" in {
     val outputDS = getSourceDs.transform(DataAnalysis.getHandDistribution)
 
-    outputDS.count() should be(4)
+    outputDS.count() should be(5)
 
     outputDS
       .filter(col("winnerHand") === "R" && col("loserHand") === "L")
       .head()
-      .fraction should be(14.285714285714286)
+      .fraction should be(10.0)
   }
 
   private def getSourceDs: Dataset[InputRecord] = {
