@@ -12,5 +12,4 @@ case class RandomForestRecord(isWinner: Double, // label we want to predict
                               age: Double,
                               rank: Int,
                               rankPoints: Int,
-                              round: String,
-                              score: String)
+                              round: String)

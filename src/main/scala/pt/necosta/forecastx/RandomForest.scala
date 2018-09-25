@@ -14,7 +14,6 @@ import pt.necosta.forecastx.record.RandomForestRecord
 object RandomForest extends WithSpark {
 
   def start(dataRaw: Dataset[RandomForestRecord]): PipelineModel = {
-    import spark.implicits._
 
     // Eliminates noisy logging
     spark.sparkContext.setLogLevel("ERROR")
@@ -76,18 +75,7 @@ object RandomForest extends WithSpark {
     println(s"train accuracy with pipeline: $trainScore")
     println(s"test accuracy with pipeline: $testScore")
 
-    /*
-        val first = udf((v: org.apache.spark.ml.linalg.Vector, pred: Double) => {
-          val p = (v.toArray.head * 100).floor / 100
-          if (pred > 0.0) 1 - p else p
-        })
-
-        model
-          .transform(trainDf)
-          .withColumn("prob", first($"probability", $"prediction"))
-          .select("label", "prob", "prediction", "score")
-          .show(20)
-     */
+    //scoreDf(model,trainDf)
 
     //cross validation
     val paramMap = new ParamGridBuilder()
@@ -110,6 +98,17 @@ object RandomForest extends WithSpark {
 
   def save(model: PipelineModel, modelFile: String): Unit = {
     model.save(modelFile)
+  }
+
+  def load(modelFile: String): PipelineModel = {
+    PipelineModel.load(modelFile)
+  }
+
+  def score(model: PipelineModel, records: Array[RandomForestRecord]): Unit = {
+    import spark.implicits._
+
+    val dummyDs = spark.createDataset[RandomForestRecord](records)
+    scoreDf(model, dummyDs.toDF())
   }
 
   private def crossValidation(pipeline: Pipeline,
@@ -142,5 +141,20 @@ object RandomForest extends WithSpark {
       .rdd
       .map(row => (row.getDouble(0), row.getDouble(1)))
     new MulticlassMetrics(rdd).accuracy
+  }
+
+  private def scoreDf(model: PipelineModel, df: DataFrame): Unit = {
+    import spark.implicits._
+
+    val first = udf((v: org.apache.spark.ml.linalg.Vector, pred: Double) => {
+      val p = (v.toArray.head * 100).floor / 100
+      if (pred > 0.0) 1 - p else p
+    })
+
+    model
+      .transform(df)
+      .withColumn("prob", first($"probability", $"prediction"))
+      .select("seed", "prob", "prediction")
+      .show(20)
   }
 }

@@ -4,7 +4,7 @@ import org.apache.spark.sql.SparkSession
 
 object StartMode extends Enumeration {
   type StartMode = Value
-  val Import, Stats, Analysis, Forecast = Value
+  val Import, Stats, Analysis, Forecast, Score = Value
 }
 
 object ForecastX {
@@ -27,6 +27,7 @@ object ForecastX {
         case Some(Stats)    => dataflow.startStatsCollection()
         case Some(Analysis) => dataflow.startAnalysis()
         case Some(Forecast) => dataflow.startForecast()
+        case Some(Score)    => dataflow.startScoring()
         case _ =>
           println(
             s"Invalid argument: $arg1. Valid values: ${StartMode.values.mkString(",")}")

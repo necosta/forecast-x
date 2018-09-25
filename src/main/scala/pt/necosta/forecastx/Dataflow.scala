@@ -3,7 +3,7 @@ package pt.necosta.forecastx
 import java.io.File
 
 import org.apache.spark.sql.functions._
-import pt.necosta.forecastx.record.InputRecord
+import pt.necosta.forecastx.record.{InputRecord, RandomForestRecord}
 
 object Dataflow {
 
@@ -109,7 +109,48 @@ class Dataflow(sourceFolder: String) extends WithSpark {
     println("Starting data forecasting")
 
     val model = RandomForest.start(DataForecast.prepData(inputDs))
-
     RandomForest.save(model, modelFile)
+  }
+
+  def startScoring(): Unit = {
+    if (!new File(modelFile).exists()) {
+      println("Skipping scoring. Model does not exist.")
+      return
+    }
+    val model = RandomForest.load(modelFile)
+
+    // ToDo: Improve collection of new records
+
+    // Should predict winner?
+    val record1 = RandomForestRecord(1.0,
+                                     "Grass",
+                                     32,
+                                     "C",
+                                     12,
+                                     "N",
+                                     "R",
+                                     175,
+                                     "AUS",
+                                     30.5,
+                                     12,
+                                     1222,
+                                     "R16")
+
+    // Should predict loser?
+    val record2 = RandomForestRecord(1.0,
+                                     "Hard",
+                                     32,
+                                     "C",
+                                     120,
+                                     "N",
+                                     "R",
+                                     150,
+                                     "POR",
+                                     35.5,
+                                     300,
+                                     10,
+                                     "R32")
+
+    RandomForest.score(model, Array(record1, record2))
   }
 }
