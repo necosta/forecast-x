@@ -4,8 +4,8 @@ case class GamesCount(tourneyId: String,
                       tourneyName: String,
                       tourneyCount: BigInt)
 
-case class SurfaceDistribution(surface: String, fraction: Double)
+case class SurfaceDistribution(surface: String, percentage: Double)
 
 case class HandDistribution(winnerHand: String,
                             loserHand: String,
-                            fraction: Double)
+                            percentage: Double)

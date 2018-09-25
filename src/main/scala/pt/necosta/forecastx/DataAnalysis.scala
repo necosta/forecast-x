@@ -6,6 +6,8 @@ import pt.necosta.forecastx.record._
 
 object DataAnalysis extends WithSpark {
 
+  val percentageColumn = "percentage"
+
   def getTournamentGamesCount: Dataset[InputRecord] => Dataset[GamesCount] = {
     import spark.implicits._
 
@@ -24,7 +26,7 @@ object DataAnalysis extends WithSpark {
         val total = ds.count
         ds.groupBy($"surface")
           .agg(count(lit(1)).alias("surfaceCount"))
-          .withColumn("fraction", col("surfaceCount") * 100 / total)
+          .withColumn(percentageColumn, col("surfaceCount") * 100 / total)
           .as[SurfaceDistribution]
       }
   }
@@ -37,7 +39,7 @@ object DataAnalysis extends WithSpark {
         val total = ds.count
         ds.groupBy($"winnerHand", $"loserHand")
           .agg(count(lit(1)).alias("count"))
-          .withColumn("fraction", col("count") * 100 / total)
+          .withColumn(percentageColumn, col("count") * 100 / total)
           .as[HandDistribution]
       }
   }

@@ -17,6 +17,7 @@ class Dataflow(sourceFolder: String) extends WithSpark {
   private val SAVE_FORMAT = "parquet"
   val dataPrep: DataPrep = DataPrep.withConfig(sourceFolder)
   val outputFile = s"$sourceFolder/output.parquet"
+  val modelFile = s"$sourceFolder/rf_model"
 
   def startImport(): Unit = {
 
@@ -51,12 +52,12 @@ class Dataflow(sourceFolder: String) extends WithSpark {
     // ToDo: Normalize null vs None
     val surfaceDistributionDs = inputDs
       .transform(DataAnalysis.getSurfaceDistribution)
-      .orderBy(desc("fraction"))
+      .orderBy(desc("percentage"))
       .collect()
 
     val handDistributionDs = inputDs
       .transform(DataAnalysis.getHandDistribution)
-      .orderBy(desc("fraction"))
+      .orderBy(desc("percentage"))
       .collect()
 
     println(s"\nThe top $NUMBER_RECORDS tournaments with more games:\n")
@@ -64,13 +65,14 @@ class Dataflow(sourceFolder: String) extends WithSpark {
       println(s"${r.tourneyId}-${r.tourneyName}: ${r.tourneyCount} games"))
 
     println(s"\nTournaments surface distribution:\n")
-    surfaceDistributionDs.foreach(r => println(s"${r.surface}: ${r.fraction}"))
+    surfaceDistributionDs.foreach(r =>
+      println(s"${r.surface}: ${r.percentage}"))
 
     println(s"\nTournaments hand winning distribution:\n")
     handDistributionDs.foreach(
       r =>
         println(
-          s"Winner:${r.winnerHand} - Loser:${r.loserHand} => ${r.fraction}"))
+          s"Winner:${r.winnerHand} - Loser:${r.loserHand} => ${r.percentage}"))
   }
 
   def startStatsCollection(): Unit = {
@@ -97,10 +99,17 @@ class Dataflow(sourceFolder: String) extends WithSpark {
   def startForecast(): Unit = {
     import spark.implicits._
 
+    if (new File(modelFile).exists()) {
+      println("Skipping forecasting. Model exists.")
+      return
+    }
+
     val inputDs = spark.read.parquet(outputFile).as[InputRecord]
 
     println("Starting data forecasting")
 
-    RandomForest.start(DataForecast.prepData(inputDs))
+    val model = RandomForest.start(DataForecast.prepData(inputDs))
+
+    RandomForest.save(model, modelFile)
   }
 }

@@ -1,23 +1,16 @@
 package pt.necosta.forecastx.record
 
-case class RandomForestRecord(isWinner: Double,
-                              surface: String, // Ex: Hard, Clay, Grass
+case class RandomForestRecord(isWinner: Double, // label we want to predict
+                              surface: String,
                               drawSize: Int,
-                              tourneyLevel: String, // Ex: A,B,C
+                              tourneyLevel: String,
                               seed: Int,
                               entry: String,
-                              hand: String, // Ex: R,L, U
-                              ioc: String,
+                              hand: String,
+                              height: Int,
+                              country: String,
                               age: Double,
                               rank: Int,
-                              rankPoints: Int)
-//ToDo: Add more features
-//ace: Int,
-//df: Int,
-//svpt: Int,
-//1stIn: Int,
-//1stWon: Int,
-//2ndWon: Int,
-//svGms: Int,
-//bpSaved: Int,
-//bpFaced: Int)
+                              rankPoints: Int,
+                              round: String,
+                              score: String)

@@ -2,7 +2,7 @@ package pt.necosta.forecastx
 
 import java.io.File
 
-import org.apache.spark.sql.{Dataset, SparkSession}
+import org.apache.spark.sql.Dataset
 import pt.necosta.forecastx.record.InputRecord
 import org.apache.spark.sql.functions._
 
@@ -27,7 +27,7 @@ class DataAnalysisSpec extends TestConfig {
     outputDS
       .filter(col("surface") === "Hard")
       .head()
-      .fraction should be(50.0)
+      .percentage should be(50.0)
   }
 
   "DataAnalysis" should "correctly get hand win/lost distribution" in {
@@ -38,7 +38,7 @@ class DataAnalysisSpec extends TestConfig {
     outputDS
       .filter(col("winnerHand") === "R" && col("loserHand") === "L")
       .head()
-      .fraction should be(10.0)
+      .percentage should be(10.0)
   }
 
   private def getSourceDs: Dataset[InputRecord] = {
